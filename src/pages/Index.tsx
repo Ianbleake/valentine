@@ -10,10 +10,15 @@ const Index = () => {
   const [noScale, setNoScale] = useState(1);
   const [showKittenModal, setShowKittenModal] = useState(false);
   const [noCount, setNoCount] = useState(0);
+  const [swapped, setSwapped] = useState(false);
 
   const handleNo = () => {
+    const newCount = noCount + 1;
+    setNoCount(newCount);
+    if (newCount >= 4) {
+      setSwapped(true);
+    }
     setNoScale((prev) => Math.max(prev * 0.7, 0.3));
-    setNoCount((prev) => prev + 1);
     setShowKittenModal(true);
   };
 
@@ -56,7 +61,7 @@ const Index = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
             >
-              Cada momento contigo es especial, y vivir nuestro primer San Valentín juntos es algo que voy a guardar siempre. 💕
+               Cada momento contigo es especial, y vivir nuestro primer San Valentín juntos es algo que voy a guardar siempre. 💕
             </motion.p>
 
             <motion.div
@@ -64,6 +69,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1 }}
+              style={{ flexDirection: swapped ? "row-reverse" : "row" }}
             >
               <motion.button
                 whileHover={{ scale: 1.1 }}
@@ -71,17 +77,19 @@ const Index = () => {
                 onClick={() => setAnswered(true)}
                 className="rounded-full bg-primary px-10 py-4 text-xl font-bold text-primary-foreground shadow-lg transition-shadow hover:shadow-xl"
                 style={{ fontFamily: "var(--font-display)" }}
+                layout
               >
                 ¡Sí! 💖
               </motion.button>
 
               <motion.button
-                
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleNo}
                 animate={{ scale: noScale }}
                 className="rounded-full border-2 border-primary/30 px-6 py-3 text-base text-muted-foreground transition-colors hover:border-primary/50"
                 style={{ fontFamily: "var(--font-display)" }}
+                layout
               >
                 No 😢
               </motion.button>
@@ -113,7 +121,7 @@ const Index = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 3.2 }}
             >
-             Este San Valentín, juntos en casa, será el primero de muchos momentos que quiero vivir contigo. Te quiero muchísimo. 💕🌸✨
+              Este San Valentín, juntos en casa, será el primero de muchos momentos que quiero vivir contigo. Te quiero muchísimo. 💕🌸✨
             </motion.p>
           </motion.div>
         )}

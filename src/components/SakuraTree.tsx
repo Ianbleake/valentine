@@ -57,65 +57,68 @@ const SakuraTree = () => {
     { d: "M38 140 Q28 135 22 128", w: 2.5, delay: 1.5 },
   ];
 
-  // Five-petal sakura flower positions
-  const flowerClusters = [
-    // Right side dense
-    { cx: 175, cy: 108, r: 18, delay: 1.8 },
-    { cx: 190, cy: 93, r: 12, delay: 2.0 },
-    { cx: 155, cy: 98, r: 14, delay: 1.9 },
-    { cx: 160, cy: 158, r: 15, delay: 2.0 },
-    { cx: 178, cy: 146, r: 11, delay: 2.1 },
-    { cx: 140, cy: 128, r: 13, delay: 2.05 },
-    { cx: 168, cy: 120, r: 10, delay: 2.15 },
-    { cx: 185, cy: 100, r: 9, delay: 2.2 },
-    { cx: 148, cy: 140, r: 12, delay: 2.1 },
-    { cx: 170, cy: 135, r: 10, delay: 2.25 },
-    { cx: 195, cy: 88, r: 10, delay: 2.3 },
-    { cx: 145, cy: 115, r: 11, delay: 2.0 },
-    { cx: 165, cy: 100, r: 9, delay: 2.15 },
-    // Left side dense
-    { cx: 25, cy: 78, r: 17, delay: 2.0 },
-    { cx: 15, cy: 56, r: 12, delay: 2.2 },
-    { cx: 35, cy: 73, r: 13, delay: 2.1 },
-    { cx: 38, cy: 138, r: 14, delay: 2.15 },
-    { cx: 22, cy: 126, r: 11, delay: 2.2 },
-    { cx: 55, cy: 105, r: 12, delay: 2.1 },
-    { cx: 30, cy: 88, r: 10, delay: 2.25 },
-    { cx: 10, cy: 65, r: 9, delay: 2.3 },
-    { cx: 45, cy: 95, r: 11, delay: 2.15 },
-    { cx: 28, cy: 130, r: 10, delay: 2.2 },
-    { cx: 48, cy: 115, r: 9, delay: 2.25 },
-    { cx: 18, cy: 70, r: 10, delay: 2.1 },
-    { cx: 42, cy: 82, r: 8, delay: 2.3 },
-    // Top dense
-    { cx: 118, cy: 33, r: 14, delay: 2.1 },
-    { cx: 125, cy: 58, r: 12, delay: 2.2 },
-    { cx: 75, cy: 53, r: 14, delay: 2.3 },
-    { cx: 108, cy: 55, r: 11, delay: 2.15 },
-    { cx: 112, cy: 40, r: 10, delay: 2.25 },
-    { cx: 130, cy: 50, r: 9, delay: 2.3 },
-    { cx: 80, cy: 45, r: 10, delay: 2.35 },
-    { cx: 68, cy: 58, r: 9, delay: 2.2 },
-    { cx: 122, cy: 28, r: 8, delay: 2.4 },
-    { cx: 90, cy: 42, r: 10, delay: 2.25 },
-    // Center canopy dense
-    { cx: 100, cy: 72, r: 16, delay: 2.0 },
-    { cx: 85, cy: 85, r: 14, delay: 2.05 },
-    { cx: 115, cy: 80, r: 13, delay: 2.1 },
-    { cx: 95, cy: 60, r: 12, delay: 2.15 },
-    { cx: 105, cy: 48, r: 11, delay: 2.2 },
-    { cx: 92, cy: 75, r: 10, delay: 2.1 },
-    { cx: 110, cy: 65, r: 11, delay: 2.15 },
-    { cx: 78, cy: 70, r: 10, delay: 2.2 },
-    { cx: 120, cy: 72, r: 9, delay: 2.25 },
-    { cx: 88, cy: 50, r: 10, delay: 2.3 },
-    { cx: 100, cy: 55, r: 9, delay: 2.2 },
-    { cx: 108, cy: 42, r: 8, delay: 2.35 },
-    { cx: 95, cy: 80, r: 10, delay: 2.1 },
-    { cx: 105, cy: 90, r: 9, delay: 2.15 },
-    { cx: 72, cy: 62, r: 9, delay: 2.25 },
-    { cx: 128, cy: 68, r: 8, delay: 2.3 },
-  ];
+  // Generate 500+ flowers distributed along branches and canopy
+  const [flowerClusters] = useState(() => {
+    const flowers: { cx: number; cy: number; r: number; delay: number }[] = [];
+    const seed = (i: number) => {
+      const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+      return x - Math.floor(x);
+    };
+
+    // Branch paths as line segments to scatter flowers along
+    const branchPaths = [
+      // Right main branch
+      { points: [[93,180],[115,155],[140,135],[160,120],[175,110],[190,95]], spread: 18, count: 60 },
+      // Right lower branch
+      { points: [[93,200],[110,190],[130,175],[145,165],[160,160],[178,148]], spread: 15, count: 45 },
+      // Right sub-branch
+      { points: [[140,135],[150,115],[155,100]], spread: 13, count: 25 },
+      // Left main branch
+      { points: [[90,160],[70,135],[50,110],[35,95],[25,80],[15,58]], spread: 18, count: 60 },
+      // Left lower branch
+      { points: [[92,190],[75,175],[60,160],[48,150],[38,140],[22,128]], spread: 15, count: 45 },
+      // Left sub-branch
+      { points: [[50,110],[40,95],[35,75]], spread: 13, count: 25 },
+      // Top branch
+      { points: [[100,100],[103,80],[108,60],[112,45],[118,35]], spread: 14, count: 35 },
+      // Top left twig
+      { points: [[97,90],[85,70],[75,55]], spread: 13, count: 25 },
+      // Top right twig
+      { points: [[103,85],[115,70],[125,60]], spread: 13, count: 25 },
+      // Center canopy dense fill
+      { points: [[90,150],[95,120],[100,90],[100,75],[100,60],[100,50]], spread: 26, count: 80 },
+      // Extra canopy left-right
+      { points: [[70,100],[85,80],[100,70],[115,80],[130,100]], spread: 20, count: 55 },
+      // Small twigs tips
+      { points: [[185,105],[190,95]], spread: 10, count: 15 },
+      { points: [[15,58],[10,50]], spread: 10, count: 15 },
+      { points: [[160,160],[170,155],[178,148]], spread: 10, count: 20 },
+      { points: [[38,140],[28,135],[22,128]], spread: 10, count: 20 },
+    ];
+
+    let idx = 0;
+    branchPaths.forEach((branch) => {
+      const pts = branch.points;
+      for (let i = 0; i < branch.count; i++) {
+        const t = seed(idx) * (pts.length - 1);
+        const segIdx = Math.min(Math.floor(t), pts.length - 2);
+        const segT = t - segIdx;
+        const bx = pts[segIdx][0] + (pts[segIdx + 1][0] - pts[segIdx][0]) * segT;
+        const by = pts[segIdx][1] + (pts[segIdx + 1][1] - pts[segIdx][1]) * segT;
+        const tipFactor = 0.7 + segT * 0.5;
+        const angle = seed(idx + 1000) * Math.PI * 2;
+        const dist = Math.sqrt(seed(idx + 2000)) * branch.spread * tipFactor;
+        const cx = bx + Math.cos(angle) * dist;
+        const cy = by + Math.sin(angle) * dist;
+        const r = 4 + seed(idx + 3000) * 9;
+        const delay = 1.8 + seed(idx + 4000) * 1.0;
+        flowers.push({ cx, cy, r, delay });
+        idx++;
+      }
+    });
+
+    return flowers;
+  });
 
   const renderFlower = (cx: number, cy: number, r: number, delay: number, idx: number) => {
     const petalCount = 5;
